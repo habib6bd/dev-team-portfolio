@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevTeam Studio
 
-## Getting Started
+Marketing site and client dashboard for a three-person web/SEO/admin team.
+Built with Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4,
+GSAP and Postgres.
 
-First, run the development server:
+## What's in here
+
+| Area | Route | Notes |
+|---|---|---|
+| Marketing site | `/`, `/about`, `/services`, `/projects`, `/contact` | Statically prerendered |
+| Hire form | `/hire-us` | Saves to Postgres via a Server Action |
+| Team sign-in | `/login` | Password + signed session cookie |
+| Dashboard | `/dashboard` | Traffic, enquiries, charts |
+| Enquiries | `/dashboard/leads` | Filter, search, status, notes |
+| Visitors | `/dashboard/visitors` | Sources, devices, pages, recent visitors |
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # then fill in the values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. The dashboard is at `/dashboard`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | What it does |
+|---|---|---|
+| `DATABASE_URL` | yes | Postgres connection string |
+| `DASHBOARD_PASSWORD` | yes | Password for `/dashboard` |
+| `SESSION_SECRET` | yes | Signs the session cookie and salts IP hashes. 32+ chars — `openssl rand -base64 32` |
+| `NEXT_PUBLIC_SITE_URL` | yes in prod | Canonical URLs, Open Graph tags, sitemap |
 
-## Learn More
+Without `DATABASE_URL` the site still runs: the dashboard shows setup
+instructions and the hire form asks visitors to email instead.
 
-To learn more about Next.js, take a look at the following resources:
+### Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Tables are created automatically on the first query, so there is no migration
+step to remember. To apply the schema deliberately (in a deploy pipeline, say):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run db:setup
+```
 
-## Deploy on Vercel
+The schema lives in [`lib/schema.sql`](lib/schema.sql) — three tables: `leads`,
+`visits`, `submission_log`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Hosting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> **Full step-by-step guide: [DEPLOYMENT.md](DEPLOYMENT.md)** — domain setup,
+> nginx, HTTPS, systemd, database hosting, backups and troubleshooting.
+
+The database is plain Postgres reached over a connection string, so **the same
+code runs on Vercel and on your own server** — only `DATABASE_URL` changes.
+Nothing needs rewriting when you move.
+
+**Now, on Vercel:** create a free Postgres database (Neon, Supabase, or Vercel
+Postgres), then add `DATABASE_URL`, `DASHBOARD_PASSWORD`, `SESSION_SECRET` and
+`NEXT_PUBLIC_SITE_URL` under Project → Settings → Environment Variables. Deploy.
+Vercel also supplies visitor country headers, so the country charts fill in.
+
+**Later, on your own domain and server:** run `npm run build && npm start`
+behind nginx or a Node process manager, with the same four variables in the
+environment. Two choices for the database:
+
+- *Keep the hosted one.* Point `DATABASE_URL` at the same Neon/Supabase
+  database and your existing data moves with you — nothing to migrate.
+- *Move it onto your server.* Install Postgres, `pg_dump` the old database and
+  restore it, then point `DATABASE_URL` at `localhost`. The code needs no
+  change: TLS is enabled automatically for remote hosts and skipped for
+  localhost.
+
+Country data comes from a Vercel-specific header, so those charts go quiet on a
+self-hosted box unless your proxy sets a geo header. Everything else — page
+views, visitors, sources, devices, enquiries — works identically.
+
+## Analytics and privacy
+
+Visits are recorded first-party by [`app/api/track/route.ts`](app/api/track/route.ts):
+no third-party analytics, no cross-site tracking. Visitors are identified by a
+random id in an HttpOnly cookie, IP addresses are stored only as a salted hash
+(used for rate limiting), obvious bots are filtered out, and `/dashboard`
+traffic is never counted.
+
+## Scripts
+
+| Command | Does |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run db:setup` | Apply `lib/schema.sql` |
+
+## Notes for future work
+
+- Content lives in [`data/siteData.ts`](data/siteData.ts) — team, services,
+  projects, reviews, FAQs. Editing that file updates every page that uses it.
+- Scroll reveals are opt-in per element: add `data-anim="fade-up"` to anything
+  inside the site layout. No `"use client"` needed. See
+  [`components/animations/AnimationProvider.tsx`](components/animations/AnimationProvider.tsx).
+- All motion is skipped when the visitor has `prefers-reduced-motion` set.
