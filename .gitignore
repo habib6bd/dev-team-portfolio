@@ -41,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cPanel upload bundle (npm run package)
+/kodenvia-deploy.zip

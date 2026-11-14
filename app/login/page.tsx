@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import LoginForm from "@/components/dashboard/LoginForm";
 import { isAuthenticated } from "@/lib/auth";
+import { site } from "@/data/siteData";
 
 export const metadata: Metadata = {
   title: "Team sign in",
@@ -19,9 +21,7 @@ export default async function LoginPage() {
       <div className="container-page relative">
         <div className="mx-auto max-w-md">
           <div className="rounded-3xl border border-ink-100 bg-white p-9 shadow-lift">
-            <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-              DT
-            </span>
+            <Image src={site.logo} alt={site.name} width={386} height={283} className="h-12 w-auto" />
 
             <h1 className="mt-6 text-2xl font-bold tracking-tight text-ink-900">Team sign in</h1>
             <p className="mt-2 text-sm leading-6 text-ink-600">

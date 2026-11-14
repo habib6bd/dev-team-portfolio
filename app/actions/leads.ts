@@ -31,6 +31,7 @@ export async function submitLead(
     phone: raw.phone,
     service: raw.service,
     budget: raw.budget || undefined,
+    budgetCurrency: raw.budgetCurrency || undefined,
     timeline: raw.timeline || undefined,
     message: raw.message,
   });

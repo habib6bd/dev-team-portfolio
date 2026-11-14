@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import BackToTop from "@/components/BackToTop";
 import AnimationProvider from "@/components/animations/AnimationProvider";
 import ScrollProgress from "@/components/animations/ScrollProgress";
 
@@ -20,6 +21,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
       </AnimationProvider>
       <Footer />
+      <BackToTop />
     </>
   );
 }

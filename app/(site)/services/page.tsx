@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import { faqs, process, services } from "@/data/siteData";
@@ -6,7 +7,7 @@ import { faqs, process, services } from "@/data/siteData";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Web development, SEO and admin support — what each service includes, what it costs, and what you get at the end.",
+    "Web development, SEO, admin support, ERP, custom software, pharmacy and super shop management software — what each service includes and what you get at the end.",
 };
 
 export default function ServicesPage() {
@@ -24,34 +25,36 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="container-page py-20">
+      <section className="container-page py-24">
         <div className="grid gap-8">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <article
-              key={service.slug}
-              id={service.slug}
+              key={service.id}
+              id={service.id}
               data-anim="fade-up"
-              className="grid scroll-mt-28 gap-8 rounded-3xl border border-ink-100 bg-white p-8 shadow-soft lg:grid-cols-[1fr_1.1fr] lg:p-10"
+              className="group grid scroll-mt-28 gap-8 rounded-3xl border border-ink-100 bg-white p-6 shadow-soft sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12 lg:p-10"
             >
-              <div>
-                <span className="font-mono text-sm font-bold text-brand-600">
-                  0{index + 1}
-                </span>
-                <h2 className="mt-4 text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
-                  {service.title}
-                </h2>
-                <p className="mt-5 text-base leading-8 text-ink-600">{service.description}</p>
-
-                <p className="mt-7 inline-flex rounded-full bg-brand-50 px-4 py-2 text-sm font-bold text-brand-800">
-                  {service.startingAt}
-                </p>
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-ink-100 lg:aspect-auto lg:min-h-80">
+                <Image
+                  src={service.image.src}
+                  alt={service.image.alt}
+                  fill
+                  loading="lazy"
+                  sizes="(min-width: 1280px) 480px, (min-width: 1024px) 40vw, 100vw"
+                  className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                />
               </div>
 
-              <div className="rounded-2xl bg-ink-50/80 p-7">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-ink-500">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
+                  {service.title}
+                </h2>
+                <p className="mt-4 text-base leading-8 text-ink-600">{service.overview}</p>
+
+                <h3 className="mt-8 text-sm font-bold uppercase tracking-widest text-ink-500">
                   What you get
                 </h3>
-                <ul className="mt-5 space-y-4">
+                <ul className="mt-5 grid gap-4 sm:grid-cols-2">
                   {service.deliverables.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-sm text-ink-700">
                       <span
@@ -69,7 +72,8 @@ export default function ServicesPage() {
                   href={`/hire-us?service=${encodeURIComponent(service.title)}`}
                   className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                 >
-                  Request {service.title.toLowerCase()}
+                  Get a quote
+                  <span className="sr-only"> for {service.title}</span>
                   <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -85,8 +89,7 @@ export default function ServicesPage() {
           <ol data-anim="fade-up" data-anim-stagger="0.1" className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {process.map((item) => (
               <li key={item.step} data-anim-child className="rounded-3xl border border-ink-100 bg-white p-7">
-                <span className="font-mono text-sm font-bold text-brand-600">{item.step}</span>
-                <h3 className="mt-4 text-lg font-bold text-ink-900">{item.title}</h3>
+                <h3 className="text-lg font-bold text-ink-900">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-ink-600">{item.description}</p>
               </li>
             ))}

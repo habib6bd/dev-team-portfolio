@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { contactDetails, services } from "@/data/siteData";
+import { contactDetails, services, site, telHref } from "@/data/siteData";
 
 const companyLinks = [
   { label: "About", href: "/about" },
@@ -20,18 +21,16 @@ export default function Footer() {
       <div className="container-page relative py-16">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-sm font-black text-white">
-                DT
-              </span>
-              <span className="text-lg font-bold text-white">
-                DevTeam <span className="font-medium text-ink-400">Studio</span>
+            <Link href="/" className="inline-flex" aria-label={`${site.name} home`}>
+              {/* The logo file has a white background, so it sits in a white tile on the dark footer. */}
+              <span className="inline-flex rounded-2xl bg-white p-2">
+                <Image src={site.logo} alt={site.name} width={386} height={283} className="h-12 w-auto" />
               </span>
             </Link>
 
             <p className="mt-5 max-w-sm text-sm leading-7 text-ink-400">
-              A small, senior team building fast websites, ranking them on Google, and handling
-              the day-to-day admin that keeps them earning.
+              A small, senior team building fast websites, ranking them on Google, and creating
+              the business software — ERP, pharmacy and retail — that keeps companies running.
             </p>
 
             <Link
@@ -60,9 +59,9 @@ export default function Footer() {
             <h2 className="text-sm font-semibold uppercase tracking-widest text-white">Services</h2>
             <ul className="mt-5 space-y-3 text-sm">
               {services.map((service) => (
-                <li key={service.slug}>
+                <li key={service.id}>
                   <Link
-                    href={`/services#${service.slug}`}
+                    href={service.link}
                     className="text-ink-400 transition-colors hover:text-white"
                   >
                     {service.title}
@@ -80,28 +79,31 @@ export default function Footer() {
                   {contactDetails.email}
                 </a>
               </li>
-              <li>
-                <a
-                  href={`tel:${contactDetails.phone.replace(/\s/g, "")}`}
-                  className="transition-colors hover:text-white"
-                >
-                  {contactDetails.phone}
-                </a>
-              </li>
+              {contactDetails.phones.map((phone) => (
+                <li key={phone}>
+                  <a href={telHref(phone)} className="transition-colors hover:text-white">
+                    {phone}
+                  </a>
+                </li>
+              ))}
               <li>{contactDetails.location}</li>
+              <li>
+                <span aria-hidden="true">🌍 </span>
+                {contactDetails.remote}
+              </li>
               <li className="text-ink-500">{contactDetails.hours}</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} DevTeam Studio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link href="/hire-us" className="transition-colors hover:text-white">
               Hire us
             </Link>
             <Link href="/dashboard" className="transition-colors hover:text-white">
-              Team dashboard
+              Dashboard
             </Link>
           </div>
         </div>

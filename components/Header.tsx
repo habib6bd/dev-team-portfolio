@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { EASE, gsap, prefersReducedMotion, useGSAP } from "@/components/animations/gsap";
+import ThemeToggle from "@/components/ThemeToggle";
+import { site } from "@/data/siteData";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -89,14 +92,16 @@ export default function Header() {
           : "border-b border-transparent bg-white/60 backdrop-blur-sm"
       }`}
     >
-      <div className="container-page flex items-center justify-between gap-4 py-4">
-        <Link href="/" className="group flex items-center gap-2.5" aria-label="DevTeam Studio home">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white shadow-glow transition-transform duration-300 group-hover:scale-105">
-            DT
-          </span>
-          <span className="text-lg font-bold tracking-tight">
-            DevTeam <span className="text-ink-400 font-medium">Studio</span>
-          </span>
+      <div className="container-page flex items-center justify-between gap-4 py-3">
+        <Link href="/" className="group flex items-center" aria-label={`${site.name} home`}>
+          <Image
+            src={site.logo}
+            alt={site.name}
+            width={386}
+            height={283}
+            preload
+            className="h-14 w-auto sm:h-16 dark:rounded-xl transition-transform duration-300 group-hover:scale-105"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
@@ -120,6 +125,8 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+
           <Link
             href="/hire-us"
             className="hidden rounded-full bg-ink-900 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-brand-600 hover:shadow-glow sm:inline-flex"

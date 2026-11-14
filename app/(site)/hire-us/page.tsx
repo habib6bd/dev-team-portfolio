@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import HireForm from "@/components/HireForm";
 import SectionTitle from "@/components/SectionTitle";
-import { contactDetails, process } from "@/data/siteData";
+import { contactDetails, process, telHref } from "@/data/siteData";
 import { SERVICE_OPTIONS } from "@/lib/validation";
 
 export const metadata: Metadata = {
@@ -67,12 +67,11 @@ export default async function HireUsPage({
                 <a href={`mailto:${contactDetails.email}`} className="block transition-colors hover:text-brand-300">
                   {contactDetails.email}
                 </a>
-                <a
-                  href={`tel:${contactDetails.phone.replace(/\s/g, "")}`}
-                  className="block transition-colors hover:text-brand-300"
-                >
-                  {contactDetails.phone}
-                </a>
+                {contactDetails.phones.map((phone) => (
+                  <a key={phone} href={telHref(phone)} className="block transition-colors hover:text-brand-300">
+                    {phone}
+                  </a>
+                ))}
               </div>
             </div>
           </aside>

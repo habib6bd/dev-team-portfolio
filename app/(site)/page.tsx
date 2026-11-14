@@ -1,11 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 import Counter from "@/components/animations/Counter";
 import HeroHeadline from "@/components/animations/HeroHeadline";
 import MagneticButton from "@/components/animations/MagneticButton";
 import ReviewSlider from "@/components/ReviewSlider";
 import SectionTitle from "@/components/SectionTitle";
-import TeamGrid from "@/components/TeamGrid";
-import { companies, process, projects, reviews, services, stats, team } from "@/data/siteData";
+import ServiceCard from "@/components/ServiceCard";
+import { companies, contactDetails, process, projects, services, stats } from "@/data/siteData";
 
 export default function HomePage() {
   return (
@@ -41,9 +42,9 @@ export default function HomePage() {
               data-anim-delay="0.45"
               className="mt-7 max-w-xl text-pretty text-lg leading-8 text-ink-600"
             >
-              Three specialists — development, SEO and admin support — working as one team.
-              We ship responsive websites, get them found on Google, and keep them running
-              long after launch.
+              Websites, SEO and admin support — plus ERP, pharmacy and retail software built
+              around how your business actually runs. One remote team that has been serving
+              clients for over three years, from the first call to long after launch.
             </p>
 
             <div
@@ -82,7 +83,7 @@ export default function HomePage() {
                       suffix={stat.suffix}
                       className="block text-3xl font-bold tracking-tight text-ink-900"
                     />
-                    <span className="mt-1 block text-xs font-medium uppercase tracking-wider text-ink-400">
+                    <span className="mt-1 block text-xs font-medium uppercase tracking-wider text-ink-500">
                       {stat.label}
                     </span>
                   </dd>
@@ -121,22 +122,16 @@ export default function HomePage() {
                 </ul>
               </div>
 
-              <div className="flex items-center justify-between gap-4 px-6 py-5">
-                <div className="flex -space-x-3">
-                  {team.map((member) => (
-                    <span
-                      key={member.slug}
-                      title={member.name}
-                      className="grid h-11 w-11 place-items-center rounded-full border-2 border-white bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white"
-                    >
-                      {member.initials}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-sm font-medium text-ink-500">
-                  The three people
-                  <br />
-                  you&apos;ll work with
+              <div className="flex items-center gap-4 px-6 py-5">
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand-50 text-xl"
+                >
+                  🌍
+                </span>
+                <p className="text-sm font-medium text-ink-600">
+                  <span className="block font-semibold text-ink-900">Fully remote team</span>
+                  {contactDetails.location} · clients worldwide
                 </p>
               </div>
             </div>
@@ -147,8 +142,8 @@ export default function HomePage() {
       {/* ------------------------------------------------- Client marquee */}
       <section className="border-b border-ink-100 bg-white py-12">
         <div className="container-page">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-ink-400">
-            Trusted by teams at
+          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-ink-500">
+            Trusted by us
           </p>
         </div>
 
@@ -163,15 +158,22 @@ export default function HomePage() {
           />
 
           <ul className="animate-marquee flex w-max items-center gap-14 pr-14">
-            {/* Duplicated once so the loop is seamless; the copy is hidden
-                from assistive tech. */}
-            {[...companies, ...companies].map((company, index) => (
+            {/* Repeated so the track is wide enough to loop seamlessly with only
+                a few logos; the copies are hidden from assistive tech. */}
+            {[...companies, ...companies, ...companies].map((company, index) => (
               <li
-                key={`${company}-${index}`}
+                key={`${company.name}-${index}`}
                 aria-hidden={index >= companies.length ? "true" : undefined}
-                className="whitespace-nowrap text-2xl font-bold tracking-tight text-ink-300 transition-colors duration-300 hover:text-ink-500"
+                className="flex items-center gap-3 whitespace-nowrap grayscale transition-all duration-300 hover:grayscale-0"
               >
-                {company}
+                <Image
+                  src={company.logo}
+                  alt={index >= companies.length ? "" : `${company.name} logo`}
+                  width={56}
+                  height={56}
+                  className="h-12 w-12 rounded-xl object-contain"
+                />
+                <span className="text-lg font-bold tracking-tight text-ink-400">{company.name}</span>
               </li>
             ))}
           </ul>
@@ -179,65 +181,59 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------ Services */}
-      <section className="container-page py-24">
-        <SectionTitle
-          label="What we do"
-          title="Three services that cover the whole lifecycle."
-          description="Build it, get it found, keep it running. You can take one or all three — most clients start with a build and stay on for support."
-        />
-
-        <div data-anim="fade-up" data-anim-stagger="0.1" className="mt-14 grid gap-6 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <article
-              key={service.slug}
-              data-anim-child
-              className="group relative flex flex-col overflow-hidden rounded-3xl border border-ink-100 bg-white p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-200 hover:shadow-lift"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute right-7 top-7 font-mono text-5xl font-bold text-ink-100 transition-colors duration-500 group-hover:text-brand-100"
-              >
-                0{index + 1}
-              </span>
-
-              <h3 className="text-xl font-bold text-ink-900">{service.title}</h3>
-              <p className="mt-4 text-base leading-7 text-ink-600">{service.description}</p>
-
-              <ul className="mt-7 flex-1 space-y-3 border-t border-ink-100 pt-6 text-sm text-ink-600">
-                {service.deliverables.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-7 text-sm font-bold text-brand-700">{service.startingAt}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------- Team */}
-      <section id="team" className="border-y border-ink-100 bg-ink-50/60 py-24">
+      <section id="services" className="scroll-mt-20 border-b border-ink-100 bg-ink-50/60 py-24">
         <div className="container-page">
-          <SectionTitle
-            label="The team"
-            title="Small team. No account managers in between."
-            description="You work directly with the three people doing the work — the same faces from the first call through to launch and beyond."
-          />
-
-          <div className="mt-14">
-            <TeamGrid members={team} />
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionTitle
+              label="What we do"
+              title="From your website to the software that runs your business."
+              description="Build it, get it found, keep it running — and when spreadsheets stop scaling, we build the ERP, pharmacy or retail system to replace them."
+            />
+            <Link
+              data-anim="fade-up"
+              href="/services"
+              className="rounded-full border border-ink-200 bg-white px-6 py-3 text-sm font-semibold text-ink-800 transition-colors hover:border-ink-300 hover:bg-ink-50"
+            >
+              All services
+            </Link>
           </div>
 
-          <p data-anim="fade-up" className="mt-10 text-sm text-ink-500">
-            Need a specialist we don&apos;t cover?{" "}
-            <Link href="/contact" className="font-semibold text-brand-700 underline underline-offset-4">
-              Tell us what you need
-            </Link>{" "}
-            — we bring in trusted partners rather than pretending.
-          </p>
+          <ul
+            data-anim="fade-up"
+            data-anim-stagger="0.08"
+            className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {services.map((service) => (
+              <li key={service.id} className="flex">
+                <ServiceCard service={service} />
+              </li>
+            ))}
+
+            {/* Fills the last slot of the grid with a route for everything else. */}
+            <li className="flex">
+              <div
+                data-anim-child
+                className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-ink-900 p-7 text-white shadow-soft"
+              >
+                <div aria-hidden="true" className="absolute inset-0 bg-grid-dark opacity-30" />
+                <div className="relative">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-200">
+                    Something else?
+                  </p>
+                  <h3 className="mt-4 text-xl font-bold leading-snug">
+                    Tell us what you need — we&apos;ll tell you honestly if we&apos;re the right fit.
+                  </h3>
+                </div>
+                <Link
+                  href="/hire-us"
+                  className="relative mt-8 inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink-900 transition-colors hover:bg-brand-400 hover:text-white"
+                >
+                  Get a quote
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -256,8 +252,7 @@ export default function HomePage() {
               data-anim-child
               className="relative rounded-3xl border border-ink-100 bg-white p-7 transition-shadow duration-500 hover:shadow-soft"
             >
-              <span className="font-mono text-sm font-bold text-brand-600">{item.step}</span>
-              <h3 className="mt-4 text-lg font-bold text-ink-900">{item.title}</h3>
+              <h3 className="text-lg font-bold text-ink-900">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-ink-600">{item.description}</p>
             </li>
           ))}
@@ -270,8 +265,8 @@ export default function HomePage() {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionTitle
               label="Selected work"
-              title="Recent projects and what they changed."
-              description="A sample of what we've shipped. Each one links to the outcome the client actually cared about."
+              title="Recent work for our clients."
+              description="A sample of what we've shipped across web development, business software and SEO."
             />
             <Link
               data-anim="fade-up"
@@ -289,9 +284,20 @@ export default function HomePage() {
                 data-anim-child
                 className="group flex flex-col overflow-hidden rounded-3xl border border-ink-100 bg-white transition-all duration-500 hover:-translate-y-1.5 hover:shadow-lift"
               >
-                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-brand-400 via-brand-600 to-ink-900">
-                  <div aria-hidden="true" className="absolute inset-0 bg-grid-dark opacity-30" />
-                  <span className="absolute bottom-4 left-5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                <div className="theme-fixed relative aspect-[16/10] overflow-hidden bg-ink-100">
+                  <Image
+                    src={project.image.src}
+                    alt={project.image.alt}
+                    fill
+                    loading="lazy"
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/70 to-transparent"
+                  />
+                  <span className="absolute bottom-4 left-5 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
                     {project.category}
                   </span>
                 </div>
@@ -323,7 +329,8 @@ export default function HomePage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-ink-500">
-          {reviews.length} of {reviews.length} clients would work with us again.
+          Over three years of web development, SEO, admin support and business software for
+          our clients.
         </p>
       </section>
 

@@ -40,8 +40,9 @@ function createPool(): Pool {
     connectionString,
     ssl: isLocal || hasExplicitSsl ? undefined : { rejectUnauthorized: false },
     // Serverless instances handle one request at a time, so a large pool
-    // only burns connection slots on the database.
-    max: process.env.VERCEL ? 1 : 10,
+    // only burns connection slots on the database. Elsewhere stay small too:
+    // shared (cPanel) Postgres allows only a handful of connections per user.
+    max: process.env.VERCEL ? 1 : 3,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
   });

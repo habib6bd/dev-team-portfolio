@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Counter from "@/components/animations/Counter";
 import SectionTitle from "@/components/SectionTitle";
-import TeamGrid from "@/components/TeamGrid";
-import { process, stats, team } from "@/data/siteData";
+import { contactDetails, process, stats } from "@/data/siteData";
 
 export const metadata: Metadata = {
-  title: "About the team",
+  title: "About us",
   description:
-    "Meet the three specialists behind DevTeam Studio — development, SEO and admin support, working as one team.",
+    "Kodenvia is a fully remote team based in Dhaka, Bangladesh — building websites, SEO and business software for clients worldwide.",
 };
 
 const values = [
@@ -39,7 +38,7 @@ export default function AboutPage() {
             as="h1"
             label="About us"
             title="A focused team for practical business websites."
-            description="We help businesses build professional websites, improve their visibility, and handle the digital tasks that pile up — with a workflow that stays predictable from the first call to the last invoice."
+            description="For more than three years we have served clients across web development, SEO, admin support and business software — helping them build professional websites, improve their visibility, and run on software made for the way they work."
           />
         </div>
       </section>
@@ -64,46 +63,34 @@ export default function AboutPage() {
       <section className="border-y border-ink-100 bg-ink-50/60 py-24">
         <div className="container-page">
           <SectionTitle
-            label="The team"
-            title="Three people, three specialisms."
-            description="Everyone here does the work themselves. There is no layer of account managers between you and the person writing the code."
+            label="How we operate"
+            title="The rules we don't bend."
+            description={`${contactDetails.remote} Everyone here does the work themselves — there is no layer of account managers between you and the person building it.`}
           />
 
-          <div className="mt-14">
-            <TeamGrid members={team} />
+          <div data-anim="fade-up" data-anim-stagger="0.1" className="mt-14 grid gap-6 md:grid-cols-3">
+            {values.map((value) => (
+              <article
+                key={value.title}
+                data-anim-child
+                className="rounded-3xl border border-ink-100 bg-white p-8 transition-shadow duration-500 hover:shadow-soft"
+              >
+                <h3 className="text-lg font-bold text-ink-900">{value.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-ink-600">{value.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="container-page py-24">
-        <SectionTitle
-          label="How we operate"
-          title="The rules we don't bend."
-        />
-
-        <div data-anim="fade-up" data-anim-stagger="0.1" className="mt-14 grid gap-6 md:grid-cols-3">
-          {values.map((value) => (
-            <article
-              key={value.title}
-              data-anim-child
-              className="rounded-3xl border border-ink-100 bg-white p-8 transition-shadow duration-500 hover:shadow-soft"
-            >
-              <h3 className="text-lg font-bold text-ink-900">{value.title}</h3>
-              <p className="mt-4 text-sm leading-7 text-ink-600">{value.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-ink-100 bg-ink-50/60 py-24">
+      <section className="py-24">
         <div className="container-page">
           <SectionTitle label="Process" title="What working with us looks like." />
 
           <ol data-anim="fade-up" data-anim-stagger="0.1" className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {process.map((item) => (
               <li key={item.step} data-anim-child className="rounded-3xl border border-ink-100 bg-white p-7">
-                <span className="font-mono text-sm font-bold text-brand-600">{item.step}</span>
-                <h3 className="mt-4 text-lg font-bold text-ink-900">{item.title}</h3>
+                <h3 className="text-lg font-bold text-ink-900">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-ink-600">{item.description}</p>
               </li>
             ))}

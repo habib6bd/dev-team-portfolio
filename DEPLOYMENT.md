@@ -1,4 +1,4 @@
-# DevTeam Studio — Setup & Deployment Guide
+# Kodenvia — Setup & Deployment Guide
 
 Everything needed to take this project from the repo to a live site on your own
 domain, and to run it afterwards.
@@ -9,6 +9,7 @@ domain, and to run it afterwards.
 3. [The database](#3-the-database) — what it stores and where to host it
 4. [Deploying to Vercel](#4-deploying-to-vercel-do-this-first) — quickest path to live
 5. [Deploying to your own server](#5-deploying-to-your-own-server) — the month-later move
+   - [Deploying to cPanel shared hosting](#5a-deploying-to-cpanel-shared-hosting) — build locally, upload a zip
 6. [Moving from Vercel to your server](#6-moving-from-vercel-to-your-own-server) — without losing data
 7. [Go-live checklist](#7-go-live-checklist)
 8. [Running it day to day](#8-running-it-day-to-day)
@@ -26,8 +27,8 @@ there and every page updates.
 | What | Where | Currently says |
 |---|---|---|
 | Team members (names, roles, bios, skills, stats, links) | `team` array | Two of the three names are invented — **Tanvir Ahmed** and **Nusrat Jahan** |
-| Contact email | `contactDetails.email` | `hello@devteamstudio.com` |
-| Phone | `contactDetails.phone` | `+880 1700-000000` |
+| Contact email | `contactDetails.email` | `kodenviatech@gmail.com` |
+| Phones | `contactDetails.phones` | `+880 1850-128324`, `+880 1613-511976` |
 | Location & office hours | `contactDetails.location`, `.hours` | Dhaka, Bangladesh |
 | Services, prices, deliverables | `services` array | `From $900`, `From $350/mo`, `From $250/mo` |
 | Projects and results | `projects` array | Example projects |
@@ -64,7 +65,7 @@ Four variables. The app will not run correctly without them.
 | `DATABASE_URL` | Yes | Postgres connection string |
 | `DASHBOARD_PASSWORD` | Yes | The password for `/dashboard` |
 | `SESSION_SECRET` | Yes | Signs the login cookie and salts IP hashes. **32+ characters** |
-| `NEXT_PUBLIC_SITE_URL` | Yes in production | Your real URL, e.g. `https://devteamstudio.com`. Used for canonical URLs, Open Graph tags and the sitemap |
+| `NEXT_PUBLIC_SITE_URL` | Yes in production | Your real URL, e.g. `https://kodenvia.com`. Used for canonical URLs, Open Graph tags and the sitemap |
 
 ### Generate the secrets
 
@@ -209,8 +210,8 @@ git push origin main
 
 ### 4.4 Connect your domain
 
-Vercel → Project → **Settings → Domains** → add `devteamstudio.com` and
-`www.devteamstudio.com`. Vercel shows the exact DNS records to create at your
+Vercel → Project → **Settings → Domains** → add `kodenvia.com` and
+`www.kodenvia.com`. Vercel shows the exact DNS records to create at your
 registrar — usually:
 
 | Type | Name | Value |
@@ -221,7 +222,7 @@ registrar — usually:
 DNS takes anywhere from a few minutes to a few hours. HTTPS is issued
 automatically once it resolves.
 
-**Then update `NEXT_PUBLIC_SITE_URL` to `https://devteamstudio.com` and
+**Then update `NEXT_PUBLIC_SITE_URL` to `https://kodenvia.com` and
 redeploy** — otherwise your sitemap and social previews keep pointing at the
 `.vercel.app` URL.
 
@@ -300,7 +301,7 @@ sudo nano /etc/systemd/system/devteam.service
 
 ```ini
 [Unit]
-Description=DevTeam Studio (Next.js)
+Description=Kodenvia (Next.js)
 After=network.target postgresql.service
 
 [Service]
@@ -341,7 +342,7 @@ sudo nano /etc/nginx/sites-available/devteam
 ```nginx
 server {
     listen 80;
-    server_name devteamstudio.com www.devteamstudio.com;
+    server_name kodenvia.com www.kodenvia.com;
 
     # Real visitor IP — the app needs this for rate limiting.
     # Without it every visitor looks like the same person.
@@ -380,13 +381,13 @@ At your domain registrar:
 | A | `@` | your server's IP |
 | A | `www` | your server's IP |
 
-Check it resolved: `dig +short devteamstudio.com`
+Check it resolved: `dig +short kodenvia.com`
 
 ### 5.7 HTTPS
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d devteamstudio.com -d www.devteamstudio.com
+sudo certbot --nginx -d kodenvia.com -d www.kodenvia.com
 ```
 
 Certbot edits your nginx config and sets up auto-renewal. Verify:
@@ -411,7 +412,7 @@ Ports 3000 and 5432 must **not** be open — nginx reaches the app over localhos
 In `.env.local`:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://devteamstudio.com
+NEXT_PUBLIC_SITE_URL=https://kodenvia.com
 ```
 
 This one is compiled into the pages, so it needs a **rebuild**, not just a
@@ -425,8 +426,137 @@ sudo systemctl restart devteam
 Confirm it took effect — the URLs here must be your real domain, not localhost:
 
 ```bash
-curl -s https://devteamstudio.com/sitemap.xml | head -20
+curl -s https://kodenvia.com/sitemap.xml | head -20
 ```
+
+---
+
+## 5A. Deploying to cPanel shared hosting
+
+For cPanel hosting with **Setup Node.js App** (CloudLinux + Passenger). This is
+a different routine from the VPS in section 5, for one reason: shared hosting
+caps how many processes your account may run, and `npm install` / `next build`
+blow straight through that cap.
+
+> **The rule: never run `npm install`, "Run NPM Install" or `next build` on the
+> server.** You build on your own computer and upload a finished bundle. The
+> server only ever runs it.
+
+### 5A.1 What you need
+
+- **Node.js 20.9 or newer** in the cPanel Node version list (22 is ideal).
+  Next.js 16 will not start on Node 18.
+- PostgreSQL in cPanel (**PostgreSQL Databases**).
+- A Linux or WSL machine to build on. The bundle contains a compiled image
+  library for Linux x64, which is what the server runs.
+
+### 5A.2 Create the database
+
+cPanel → **PostgreSQL Databases**:
+
+1. Create a database, e.g. `kodenvia`. cPanel prefixes it with your account
+   name: `cpuser_kodenvia`.
+2. Create a user with a long random password, e.g. `cpuser_kodenvia`.
+3. **Add User to Database** — pick both, submit.
+
+Your connection string, with the prefixed names:
+
+```
+DATABASE_URL=postgresql://cpuser_kodenvia:PASSWORD@localhost:5432/cpuser_kodenvia
+```
+
+It must say `localhost` — the app then skips TLS, which cPanel's local Postgres
+does not offer. URL-encode special characters in the password (`@` → `%40`).
+
+You do not create tables. The app creates them on its first query.
+
+### 5A.3 Build the bundle (on your computer)
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://kodenvia.com npm run package
+```
+
+This builds the site and writes **`kodenvia-deploy.zip`** (about 20 MB, 58 MB
+unpacked) in the project folder. It contains the server, its dependencies, the
+static files and `public/` — everything, already installed. It contains no
+secrets.
+
+`NEXT_PUBLIC_SITE_URL` is baked in here, at build time. Setting it in cPanel
+later does nothing.
+
+### 5A.4 Create the app (first time only)
+
+cPanel → **Setup Node.js App** → **Create Application**:
+
+| Field | Value |
+|---|---|
+| Node.js version | 20.9+ (22 if offered) |
+| Application mode | Production |
+| Application root | `kodenvia` (a folder in your home directory, **not** inside `public_html`) |
+| Application URL | `kodenvia.com` |
+| Application startup file | `server.js` |
+
+Then add the environment variables on the same screen:
+
+| Name | Value |
+|---|---|
+| `DATABASE_URL` | the string from 5A.2 |
+| `DASHBOARD_PASSWORD` | your dashboard password |
+| `SESSION_SECRET` | `openssl rand -base64 32` output |
+
+Do not set `PORT` — Passenger handles the port itself. Save, then **Stop** the
+app before uploading.
+
+### 5A.5 Upload
+
+cPanel → **File Manager** → open the application root (`kodenvia/`):
+
+1. Turn on **Settings → Show Hidden Files** (the `.next` folder is hidden
+   otherwise).
+2. Delete whatever cPanel put there (a sample `server.js`, a `node_modules`
+   link if one exists).
+3. Upload `kodenvia-deploy.zip`, select it, **Extract**, then delete the zip.
+
+You should now see `server.js`, `package.json`, `.next/`, `node_modules/`,
+`public/` and `lib/` directly inside `kodenvia/` — not inside a subfolder.
+
+Back in **Setup Node.js App**, press **Start**. Ignore the "Run NPM Install"
+button, permanently.
+
+### 5A.6 Check it works
+
+- `https://kodenvia.com` loads with styling and images.
+- Submit a test enquiry at `/hire-us`, log in at `/login`, confirm it appears in
+  `/dashboard/leads`, delete it. That proves the database connection.
+
+Turn on HTTPS under cPanel → **SSL/TLS Status** (AutoSSL) if it is not already.
+
+### 5A.7 Updating the site
+
+Every update is the same four steps:
+
+1. Locally: `NEXT_PUBLIC_SITE_URL=https://kodenvia.com npm run package`
+2. cPanel → Setup Node.js App → **Stop**.
+3. File Manager → in `kodenvia/`, delete `.next`, `node_modules`, `public`,
+   `lib`, `server.js` and `package.json`, then upload and extract the new zip.
+4. **Start**.
+
+Deleting first matters: every build names its files differently, so extracting
+over the old copy leaves dead files piling up against your disk quota.
+
+The database is untouched by updates. Environment variables stay in cPanel.
+
+### 5A.8 If something goes wrong
+
+| Symptom | Cause and fix |
+|---|---|
+| 503, or "Resource limit reached" | The process limit. Something ran `npm install` or a build on the server, or old processes are stuck. Stop the app, wait a minute, Start. |
+| App will not start | Check the Node version is 20.9+, the startup file is `server.js`, and that `server.js` sits directly in the application root. The error is in `stderr.log` in the application root. |
+| cPanel complains that `node_modules` must not be a folder | That check only guards its own "Run NPM Install". Do not run it; the bundle's `node_modules` is complete. |
+| Page loads without styling | `.next/static` is missing — hidden files were not shown during upload, or the zip was extracted into a subfolder. |
+| Site works but photos are broken | The image optimizer cannot run on this host. In `next.config.ts` add `unoptimized: true` inside `images`, then repackage and upload. |
+| Hire form or dashboard errors | `DATABASE_URL` is wrong. Recheck the prefixed database and user names, and that the user was added to the database. |
+| "too many connections" from Postgres | The app holds at most 3 connections. Other sites on the account are using the rest. |
 
 ---
 
@@ -510,7 +640,7 @@ else is identical. If you want countries back, put Cloudflare in front and read
 - [ ] Login rejects a wrong password
 - [ ] `/dashboard` redirects to `/login` in a private window
 - [ ] Delete the test enquiry
-- [ ] `https://devteamstudio.com/sitemap.xml` lists your pages
+- [ ] `https://kodenvia.com/sitemap.xml` lists your pages
 - [ ] Test the site on a real phone
 
 **After launch**

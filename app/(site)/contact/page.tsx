@@ -1,31 +1,36 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
-import { contactDetails, faqs } from "@/data/siteData";
+import { contactDetails, faqs, telHref } from "@/data/siteData";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with DevTeam Studio about web development, SEO setup, admin support or ongoing maintenance.",
+    "Get in touch with Kodenvia about web development, SEO, admin support or business software such as ERP, pharmacy and super shop management.",
 };
 
-const channels = [
+type Channel = {
+  label: string;
+  /** One or more lines; each with an optional link. */
+  values: { text: string; href?: string }[];
+  hint: string;
+};
+
+const channels: Channel[] = [
   {
     label: "Email",
-    value: contactDetails.email,
-    href: `mailto:${contactDetails.email}`,
+    values: [{ text: contactDetails.email, href: `mailto:${contactDetails.email}` }],
     hint: "Best for project details and documents",
   },
   {
     label: "Phone / WhatsApp",
-    value: contactDetails.phone,
-    href: `tel:${contactDetails.phone.replace(/\s/g, "")}`,
+    values: contactDetails.phones.map((phone) => ({ text: phone, href: telHref(phone) })),
     hint: "Fastest for quick questions",
   },
   {
     label: "Location",
-    value: contactDetails.location,
-    hint: contactDetails.hours,
+    values: [{ text: contactDetails.location }],
+    hint: `${contactDetails.remote} ${contactDetails.hours}`,
   },
 ];
 
@@ -39,7 +44,7 @@ export default function ContactPage() {
             as="h1"
             label="Contact"
             title="Let's discuss your project."
-            description="Reach us however suits you. Whichever route you take, you'll get a reply from one of the three of us — not an automated queue."
+            description="Reach us however suits you. Whichever route you take, you'll get a reply from someone who does the work — not an automated queue."
           />
         </div>
       </section>
@@ -53,19 +58,26 @@ export default function ContactPage() {
                 data-anim-child
                 className="rounded-3xl border border-ink-100 bg-white p-7 shadow-soft"
               >
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-400">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-500">
                   {channel.label}
                 </p>
-                {channel.href ? (
-                  <a
-                    href={channel.href}
-                    className="mt-3 block text-xl font-bold text-ink-900 transition-colors hover:text-brand-600"
-                  >
-                    {channel.value}
-                  </a>
-                ) : (
-                  <p className="mt-3 text-xl font-bold text-ink-900">{channel.value}</p>
-                )}
+                <div className="mt-3 space-y-1">
+                  {channel.values.map((value) =>
+                    value.href ? (
+                      <a
+                        key={value.text}
+                        href={value.href}
+                        className="block text-xl font-bold text-ink-900 transition-colors hover:text-brand-600"
+                      >
+                        {value.text}
+                      </a>
+                    ) : (
+                      <p key={value.text} className="text-xl font-bold text-ink-900">
+                        {value.text}
+                      </p>
+                    ),
+                  )}
+                </div>
                 <p className="mt-2 text-sm text-ink-500">{channel.hint}</p>
               </div>
             ))}

@@ -1,6 +1,7 @@
-# DevTeam Studio
+# Kodenvia
 
-Marketing site and client dashboard for a three-person web/SEO/admin team.
+Marketing site and client dashboard for a fully remote web, SEO, admin and
+business-software team.
 Built with Next.js 16 (App Router, Turbopack), React 19, Tailwind CSS v4,
 GSAP and Postgres.
 
@@ -99,8 +100,11 @@ traffic is never counted.
 
 ## Notes for future work
 
-- Content lives in [`data/siteData.ts`](data/siteData.ts) — team, services,
+- Content lives in [`data/siteData.ts`](data/siteData.ts) — services,
   projects, reviews, FAQs. Editing that file updates every page that uses it.
+- Placeholder photos live in [`data/images.ts`](data/images.ts). Swap a `src`
+  for a real image (a URL or a file under `/public`); new remote hosts must be
+  added to `images.remotePatterns` in `next.config.ts`.
 - Scroll reveals are opt-in per element: add `data-anim="fade-up"` to anything
   inside the site layout. No `"use client"` needed. See
   [`components/animations/AnimationProvider.tsx`](components/animations/AnimationProvider.tsx).

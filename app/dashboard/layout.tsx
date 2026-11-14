@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
 import DashboardNav from "@/components/dashboard/DashboardNav";
 import { requireAuth } from "@/lib/auth";
+import { site } from "@/data/siteData";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -16,13 +18,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
   await requireAuth();
 
   return (
-    <div className="min-h-screen bg-ink-50/60">
+    // theme-fixed: the dashboard stays light even when the visitor picked dark
+    // mode on the public site — its charts use fixed light-theme colours.
+    <div className="theme-fixed min-h-screen bg-white text-ink-900">
+      <div className="min-h-screen bg-ink-50/60">
       <div className="border-b border-ink-100 bg-white">
         <div className="container-page flex flex-wrap items-center justify-between gap-4 py-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white">
-              DT
-            </span>
+            <Image src={site.logo} alt={site.name} width={386} height={283} className="h-10 w-auto" />
             <div>
               <p className="text-sm font-bold text-ink-900">Team dashboard</p>
               <p className="text-xs text-ink-500">Clients, enquiries and site traffic</p>
@@ -52,7 +55,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </div>
 
-      <main className="container-page py-8">{children}</main>
+        <main className="container-page py-8">{children}</main>
+      </div>
     </div>
   );
 }

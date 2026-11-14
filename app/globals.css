@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* `dark:` utilities follow the .dark class on <html> (set by ThemeToggle),
+   not the operating system setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ------------------------------------------------------------------
    Design tokens
    ------------------------------------------------------------------ */
@@ -39,6 +43,87 @@
 }
 
 /* ------------------------------------------------------------------
+   Dark theme
+
+   Every colour on the site comes from the tokens above, so dark mode is a
+   swap of those tokens rather than a `dark:` class on every element: the
+   ink scale and white trade places, and the brand scale flips so blue text
+   stays readable on a dark surface.
+
+   Areas that are dark or photographic in BOTH themes (footer, CTA bands,
+   brand gradient cards, image overlays) must not flip, or they would turn
+   light. They get the original tokens back — automatically for the two
+   background classes below, or by adding `theme-fixed` by hand.
+   ------------------------------------------------------------------ */
+.dark {
+  color-scheme: dark;
+
+  --color-white: #0c1322;
+  --color-ink-50: #121b2e;
+  --color-ink-100: #1c273c;
+  --color-ink-200: #2a374f;
+  --color-ink-300: #3f4d68;
+  --color-ink-400: #6b7a96;
+  --color-ink-500: #94a0b8;
+  --color-ink-600: #adb7cb;
+  --color-ink-700: #c5cddc;
+  --color-ink-800: #dbe0ea;
+  --color-ink-900: #f1f4f9;
+  --color-ink-950: #ffffff;
+
+  --color-brand-50: #0f2545;
+  --color-brand-100: #163a66;
+  --color-brand-200: #17427a;
+  --color-brand-300: #1d5fbe;
+  --color-brand-400: #2a78d6;
+  --color-brand-500: #4a90f0;
+  --color-brand-600: #6aa6ff;
+  --color-brand-700: #8ebeff;
+  --color-brand-800: #bcd7ff;
+  --color-brand-900: #d9e8ff;
+  --color-brand-950: #eef5ff;
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -24px rgb(0 0 0 / 0.8);
+}
+
+.dark :where(.theme-fixed, .bg-ink-950, .from-brand-600) {
+  color-scheme: light;
+
+  --color-white: #ffffff;
+  --color-ink-50: #f6f7f9;
+  --color-ink-100: #eceef2;
+  --color-ink-200: #d5d9e2;
+  --color-ink-300: #b0b8c9;
+  --color-ink-400: #8491aa;
+  --color-ink-500: #64738f;
+  --color-ink-600: #4e5b75;
+  --color-ink-700: #404a5f;
+  --color-ink-800: #374050;
+  --color-ink-900: #0f172a;
+  --color-ink-950: #080d1a;
+
+  --color-brand-50: #eef5ff;
+  --color-brand-100: #d9e8ff;
+  --color-brand-200: #bcd7ff;
+  --color-brand-300: #8ebeff;
+  --color-brand-400: #5999ff;
+  --color-brand-500: #2a78d6;
+  --color-brand-600: #1d5fbe;
+  --color-brand-700: #184f95;
+  --color-brand-800: #17427a;
+  --color-brand-900: #163a66;
+  --color-brand-950: #0f2545;
+}
+
+/* The blueprint grid is drawn in dark ink; on a dark page it needs light lines. */
+.dark .bg-grid:not(.theme-fixed *) {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+}
+
+/* ------------------------------------------------------------------
    Base
    ------------------------------------------------------------------ */
 @layer base {
@@ -48,7 +133,7 @@
   }
 
   body {
-    background-color: #ffffff;
+    background-color: var(--color-white);
     color: var(--color-ink-900);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;

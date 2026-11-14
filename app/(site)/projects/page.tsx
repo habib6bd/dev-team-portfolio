@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import { projects } from "@/data/siteData";
@@ -6,7 +7,7 @@ import { projects } from "@/data/siteData";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Recent web development, SEO and operations projects — and the results they produced for each client.",
+    "Recent web development, ERP software and SEO work from the Kodenvia team.",
 };
 
 export default function ProjectsPage() {
@@ -18,29 +19,34 @@ export default function ProjectsPage() {
           <SectionTitle
             as="h1"
             label="Projects"
-            title="Work we've shipped, and what it changed."
-            description="Every project below lists the outcome the client measured — not just the technology we used."
+            title="Work we've shipped for our clients."
+            description="A selection from more than three years of web development, SEO, admin support and business software work."
           />
         </div>
       </section>
 
       <section className="container-page py-20">
         <div data-anim="fade-up" data-anim-stagger="0.1" className="grid gap-8">
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <article
               key={project.slug}
               data-anim-child
               className="group grid gap-8 overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-soft transition-shadow duration-500 hover:shadow-lift lg:grid-cols-[1fr_1.2fr]"
             >
-              <div className="relative min-h-56 overflow-hidden bg-gradient-to-br from-brand-400 via-brand-600 to-ink-900">
-                <div aria-hidden="true" className="absolute inset-0 bg-grid-dark opacity-30" />
-                <span
+              <div className="theme-fixed relative aspect-[16/10] overflow-hidden bg-ink-100 lg:aspect-auto lg:min-h-72">
+                <Image
+                  src={project.image.src}
+                  alt={project.image.alt}
+                  fill
+                  loading="lazy"
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className="object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-105"
+                />
+                <div
                   aria-hidden="true"
-                  className="absolute right-6 top-6 font-mono text-6xl font-bold text-white/15"
-                >
-                  0{index + 1}
-                </span>
-                <span className="absolute bottom-5 left-6 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                  className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/70 to-transparent"
+                />
+                <span className="absolute bottom-5 left-6 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur">
                   {project.category}
                 </span>
               </div>

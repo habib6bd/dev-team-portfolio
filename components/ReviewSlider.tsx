@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EASE, gsap, prefersReducedMotion, useGSAP } from "@/components/animations/gsap";
 import { reviews } from "@/data/siteData";
@@ -60,12 +61,13 @@ export default function ReviewSlider() {
           </blockquote>
 
           <figcaption className="mt-7 flex items-center gap-4">
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white">
-              {review.name
-                .split(" ")
-                .map((part) => part[0])
-                .join("")}
-            </span>
+            <Image
+              src={review.logo}
+              alt={`${review.company} logo`}
+              width={56}
+              height={56}
+              className="h-14 w-14 shrink-0 rounded-full border border-ink-100 bg-white object-cover"
+            />
             <span>
               <span className="block font-bold text-ink-900">{review.name}</span>
               <span className="block text-sm text-ink-500">

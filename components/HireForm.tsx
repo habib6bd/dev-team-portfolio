@@ -6,10 +6,10 @@ import { submitLead } from "@/app/actions/leads";
 import { EASE, gsap, prefersReducedMotion, useGSAP } from "@/components/animations/gsap";
 import { contactDetails } from "@/data/siteData";
 import { initialLeadFormState } from "@/lib/lead-form-state";
-import { BUDGET_OPTIONS, SERVICE_OPTIONS, TIMELINE_OPTIONS } from "@/lib/validation";
+import { SERVICE_OPTIONS, TIMELINE_OPTIONS } from "@/lib/validation";
 
 const inputClass =
-  "w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-base text-ink-900 outline-none transition-colors placeholder:text-ink-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10";
+  "w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-base text-ink-900 outline-none transition-colors placeholder:text-ink-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20";
 
 const errorInputClass = "border-red-400 focus:border-red-500 focus:ring-red-500/10";
 
@@ -189,20 +189,41 @@ export default function HireForm({ defaultService }: { defaultService?: string }
           </select>
         </Field>
 
-        <Field label="Budget range" htmlFor={fieldId("budget")} hint="Helps us scope realistically.">
-          <select
-            id={fieldId("budget")}
-            name="budget"
-            defaultValue={valueFor("budget") ?? ""}
-            className={inputClass}
-          >
-            <option value="">Prefer not to say</option>
-            {BUDGET_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+        <Field
+          label="Budget"
+          htmlFor={fieldId("budget")}
+          error={errorFor("budget")}
+          hint="Optional. Any amount, in US dollars or taka."
+        >
+          {/* Fixed narrow column for the currency; the amount takes the rest. */}
+          <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-2">
+            <select
+              name="budgetCurrency"
+              aria-label="Budget currency"
+              defaultValue={valueFor("budgetCurrency") ?? "USD"}
+              className={inputClass}
+            >
+              <option value="USD">USD $</option>
+              <option value="BDT">BDT ৳</option>
+            </select>
+            <input
+              id={fieldId("budget")}
+              name="budget"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step="any"
+              defaultValue={valueFor("budget")}
+              // type="number" still accepts "-", "+" and "e" from the keyboard.
+              onKeyDown={(event) => {
+                if (["-", "+", "e", "E"].includes(event.key)) event.preventDefault();
+              }}
+              aria-invalid={Boolean(errorFor("budget"))}
+              aria-describedby={errorFor("budget") ? `${fieldId("budget")}-error` : undefined}
+              className={`${inputClass} ${errorFor("budget") ? errorInputClass : ""}`}
+              placeholder="e.g. 1500"
+            />
+          </div>
         </Field>
 
         <div className="sm:col-span-2">

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "package": "bash scripts/package.sh",
     "lint": "eslint",
     "db:setup": "node scripts/setup-db.mjs",
     "typecheck": "tsc --noEmit"

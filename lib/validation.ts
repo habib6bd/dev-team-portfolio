@@ -4,16 +4,12 @@ export const SERVICE_OPTIONS = [
   "Web Development",
   "SEO",
   "Admin Support",
+  "ERP Software Solution",
+  "Custom Software Development",
+  "Pharmacy Management Software",
+  "Super Shop Management Software",
   "Full package",
   "Something else",
-] as const;
-
-export const BUDGET_OPTIONS = [
-  "Under $500",
-  "$500 – $1,500",
-  "$1,500 – $5,000",
-  "$5,000+",
-  "Not sure yet",
 ] as const;
 
 export const TIMELINE_OPTIONS = [
@@ -22,6 +18,10 @@ export const TIMELINE_OPTIONS = [
   "1 – 3 months",
   "Just exploring",
 ] as const;
+
+/** Currencies a client can state their budget in (BDT = Bangladeshi taka). */
+export const BUDGET_CURRENCIES = ["USD", "BDT"] as const;
+const CURRENCY_SYMBOLS: Record<(typeof BUDGET_CURRENCIES)[number], string> = { USD: "$", BDT: "৳" };
 
 export const LEAD_STATUSES = ["new", "contacted", "won", "archived"] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
@@ -34,7 +34,8 @@ const optionalText = (max: number) =>
     .optional()
     .transform((value) => (value ? value : null));
 
-export const leadSchema = z.object({
+export const leadSchema = z
+  .object({
   name: z
     .string()
     .trim()
@@ -49,14 +50,36 @@ export const leadSchema = z.object({
   company: optionalText(160),
   phone: optionalText(40),
   service: z.enum(SERVICE_OPTIONS, { message: "Please choose a service." }),
-  budget: z.enum(BUDGET_OPTIONS).optional().nullable(),
+  // Free-form amount: any number from zero up, never negative. Combined with
+  // the currency below into display text ("$1,500", "৳50,000") for storage.
+  budget: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => value || null)
+    .refine((value) => value === null || /^\d{1,9}(\.\d{1,2})?$/.test(value), {
+      message: "Please enter the amount as a number, zero or more.",
+    }),
+  budgetCurrency: z.enum(BUDGET_CURRENCIES).default("USD"),
   timeline: z.enum(TIMELINE_OPTIONS).optional().nullable(),
   message: z
     .string()
     .trim()
     .min(20, "Please tell us a little more — at least 20 characters.")
     .max(4000, "Please keep the message under 4000 characters."),
-});
+  })
+  .transform(({ budget, budgetCurrency, ...rest }) => ({
+    ...rest,
+    budget:
+      budget === null
+        ? null
+        : CURRENCY_SYMBOLS[budgetCurrency] +
+          Number(budget).toLocaleString("en-US", {
+            // Whole amounts stay clean ("$1,500"); cents always show two digits.
+            minimumFractionDigits: Number.isInteger(Number(budget)) ? 0 : 2,
+            maximumFractionDigits: 2,
+          }),
+  }));
 
 export type LeadInput = z.infer<typeof leadSchema>;
 

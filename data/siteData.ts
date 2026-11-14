@@ -1,133 +1,155 @@
-export type Service = {
-  slug: string;
+import { projectImages, serviceImages, type SiteImage } from "./images";
+
+/** Brand identity, used by the header, footer, metadata and docs. */
+export const site = {
+  name: "Kodenvia",
+  domain: "kodenvia.com",
+  url: "https://kodenvia.com",
+  /** Tight crop of kodenvia_final_logo.webp (the original has wide white margins). */
+  logo: "/kodenvia-logo.webp",
+};
+
+export interface Service {
+  /** Stable id — also the anchor on /services (`/services#<id>`). */
+  id: string;
   title: string;
+  /** One or two lines, shown on the service cards. */
   description: string;
+  /** The longer pitch on the services page. */
+  overview: string;
+  image: SiteImage;
+  /** Where the card's "Learn more" link goes. */
+  link: string;
   deliverables: string[];
-  startingAt: string;
-};
+}
 
-export type TeamMember = {
-  slug: string;
-  name: string;
-  role: string;
-  focus: string;
-  bio: string;
-  initials: string;
-  skills: string[];
-  stats: { label: string; value: string }[];
-  links: { label: string; href: string }[];
-};
-
-export const companies = [
-  "TechNova",
-  "BrightSoft",
-  "BluePeak",
-  "DataHive",
-  "CloudNest",
-  "Northwind",
+/** Clients we work with — logos live in /public/images/companywework. */
+export const companies: { name: string; logo: string }[] = [
+  { name: "Netbazar", logo: "/images/companywework/netbazar-logo.jpeg" },
+  { name: "ASVAB Tutoring", logo: "/images/companywework/asvab-tutoring-logo.webp" },
+  { name: "Quality School", logo: "/images/companywework/qualityschool-logo.webp" },
+  { name: "NewsStream", logo: "/images/companywework/newsstream.jpg" },
 ];
 
 export const stats = [
-  { value: 48, suffix: "+", label: "Projects delivered" },
-  { value: 26, suffix: "", label: "Happy clients" },
-  { value: 6, suffix: " yrs", label: "Combined experience" },
+  { value: 3, suffix: "+ yrs", label: "Serving clients" },
+  { value: 4, suffix: "", label: "Clients served" },
+  { value: 7, suffix: "", label: "Services offered" },
   { value: 24, suffix: "h", label: "Average reply time" },
-];
-
-/* The three people a client actually works with. */
-export const team: TeamMember[] = [
-  {
-    slug: "mahabubur-rahman",
-    name: "Mahabubur Rahman",
-    role: "Project Manager & Full-Stack Developer",
-    focus: "Strategy, architecture, delivery",
-    bio: "Runs every engagement end to end — scoping, architecture and the weekly build. Writes the backend, keeps the timeline honest, and is the person you talk to when something needs a decision.",
-    initials: "MR",
-    skills: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Project delivery"],
-    stats: [
-      { label: "Projects led", value: "30+" },
-      { label: "Experience", value: "5 yrs" },
-    ],
-    links: [
-      { label: "Email", href: "mailto:hello@devteamstudio.com" },
-      { label: "LinkedIn", href: "https://www.linkedin.com" },
-    ],
-  },
-  {
-    slug: "frontend-lead",
-    name: "Tanvir Ahmed",
-    role: "Frontend Developer",
-    focus: "Interface, motion, accessibility",
-    bio: "Turns designs into fast, responsive interfaces that hold up on a mid-range phone. Obsessive about layout details, Core Web Vitals and making animation feel intentional rather than decorative.",
-    initials: "TA",
-    skills: ["React", "Tailwind CSS", "GSAP", "UI systems", "Accessibility"],
-    stats: [
-      { label: "Interfaces shipped", value: "40+" },
-      { label: "Avg. Lighthouse", value: "95+" },
-    ],
-    links: [
-      { label: "Email", href: "mailto:hello@devteamstudio.com" },
-      { label: "GitHub", href: "https://github.com" },
-    ],
-  },
-  {
-    slug: "seo-specialist",
-    name: "Nusrat Jahan",
-    role: "SEO Specialist & Admin Support",
-    focus: "Visibility, content ops, reporting",
-    bio: "Handles the work that keeps a site earning after launch — technical SEO, on-page structure, content updates and the monthly report that tells you what actually changed.",
-    initials: "NJ",
-    skills: ["Technical SEO", "Keyword research", "Analytics", "Content ops", "Reporting"],
-    stats: [
-      { label: "Sites optimised", value: "35+" },
-      { label: "Avg. traffic lift", value: "2.4x" },
-    ],
-    links: [
-      { label: "Email", href: "mailto:hello@devteamstudio.com" },
-      { label: "LinkedIn", href: "https://www.linkedin.com" },
-    ],
-  },
 ];
 
 export const services: Service[] = [
   {
-    slug: "web-development",
+    id: "web-development",
     title: "Web Development",
     description:
+      "Fast, responsive marketing sites, landing pages and dashboards built on Next.js.",
+    overview:
       "Responsive marketing sites, landing pages and custom dashboards built on Next.js — fast, accessible and easy for your team to maintain.",
+    image: serviceImages.webDevelopment,
+    link: "/services#web-development",
     deliverables: [
       "Responsive marketing site or web app",
       "CMS or admin panel for your content",
       "Performance & accessibility pass",
       "Deployment and handover docs",
     ],
-    startingAt: "From $900",
   },
   {
-    slug: "seo",
+    id: "seo",
     title: "SEO",
     description:
+      "Technical audits, on-page structure and Core Web Vitals work that lifts your rankings.",
+    overview:
       "Technical audits, on-page structure, metadata and Core Web Vitals work that moves a site up the results page and keeps it there.",
+    image: serviceImages.seo,
+    link: "/services#seo",
     deliverables: [
       "Full technical SEO audit",
       "On-page & metadata implementation",
       "Schema markup and sitemap setup",
       "Monthly ranking and traffic report",
     ],
-    startingAt: "From $350/mo",
   },
   {
-    slug: "admin-support",
+    id: "admin-support",
     title: "Admin Support",
     description:
+      "Content updates, data entry and reporting handled, so your team can stay on the business.",
+    overview:
       "The ongoing operational work — content updates, data entry, product uploads and reporting — handled so your team can stay on the business.",
+    image: serviceImages.adminSupport,
+    link: "/services#admin-support",
     deliverables: [
       "Content and product updates",
       "Data entry and clean-up",
       "Inbox and CRM maintenance",
       "Weekly progress reporting",
     ],
-    startingAt: "From $250/mo",
+  },
+  {
+    id: "erp-software",
+    title: "ERP Software Solution",
+    description:
+      "End-to-end business management: accounts, inventory, HR, sales and reporting in one system.",
+    overview:
+      "One system for the whole business — accounts, inventory, HR, sales and reporting — so every department works from the same live numbers instead of a pile of spreadsheets.",
+    image: serviceImages.erp,
+    link: "/services#erp-software",
+    deliverables: [
+      "Accounts, inventory, HR and sales modules",
+      "Role-based access for each department",
+      "Real-time dashboards and exportable reports",
+      "Data migration, training and support",
+    ],
+  },
+  {
+    id: "custom-software",
+    title: "Custom Software Development",
+    description:
+      "Tailored software built around the way your team already works, not the other way round.",
+    overview:
+      "When off-the-shelf tools don't fit, we build software around your actual workflow — from internal tools and portals to integrations with the systems you already use.",
+    image: serviceImages.customSoftware,
+    link: "/services#custom-software",
+    deliverables: [
+      "Workflow discovery and written specification",
+      "Web-based app built in weekly releases",
+      "Integrations with your existing tools",
+      "Source code, documentation and handover",
+    ],
+  },
+  {
+    id: "pharmacy-software",
+    title: "Pharmacy Management Software",
+    description:
+      "Medicine inventory, expiry tracking, billing, prescriptions and supplier management.",
+    overview:
+      "Built for the pharmacy counter — track every medicine by batch and expiry, bill quickly, record prescriptions and keep supplier orders and dues under control.",
+    image: serviceImages.pharmacy,
+    link: "/services#pharmacy-software",
+    deliverables: [
+      "Medicine inventory with batch and expiry alerts",
+      "Fast billing and prescription records",
+      "Supplier, purchase and due management",
+      "Daily sales and stock reports",
+    ],
+  },
+  {
+    id: "super-shop-software",
+    title: "Super Shop Management Software",
+    description:
+      "POS with barcode billing, stock control and multi-branch sales reports.",
+    overview:
+      "A point-of-sale system for supermarkets and retail chains — barcode billing at the till, live stock control and sales reports across every branch.",
+    image: serviceImages.superShop,
+    link: "/services#super-shop-software",
+    deliverables: [
+      "POS with barcode scanning and receipt printing",
+      "Stock control with low-stock alerts",
+      "Multi-branch sales and profit reports",
+      "Staff roles, shifts and cash reconciliation",
+    ],
   },
 ];
 
@@ -160,52 +182,63 @@ export const process = [
 
 export const projects = [
   {
-    slug: "business-landing-website",
-    title: "Business Landing Website",
+    slug: "asvab-tutoring-website",
+    title: "ASVAB Tutoring Website",
     category: "Web Development",
+    image: projectImages.asvabTutoring,
     description:
-      "A responsive lead-generation site for a B2B services firm, rebuilt for speed and clarity.",
-    result: "3.1x more enquiries in the first quarter",
-    tags: ["Next.js", "Tailwind CSS", "Vercel"],
+      "A test-prep website for a US military entrance exam tutoring company, covering ASVAB, ASTB, OAR, AFOQT and SIFT. Visitors can browse courses, take free practice tests and request a tutor straight from the homepage.",
+    result: "Tutor request form on the first screen",
+    tags: ["Course pages", "Free practice tests", "Lead form", "Responsive"],
   },
   {
-    slug: "admin-dashboard",
-    title: "Operations Dashboard",
-    category: "Admin Support",
+    slug: "netbazar-erp",
+    title: "NetBazar Shop Management ERP",
+    category: "ERP Software",
+    image: projectImages.netbazarErp,
     description:
-      "An internal dashboard for managing users, reports and daily business data in one place.",
-    result: "Cut weekly reporting time from 6 hours to 40 minutes",
-    tags: ["React", "PostgreSQL", "Charts"],
+      "A shop management system for a retail business: sales and purchases, stock, customers, suppliers and expenses in one place. It also tracks serial and IMEI numbers, warranty claims and faulty items sent back to suppliers.",
+    result: "Sales, profit and low stock on one dashboard",
+    tags: ["Sales & invoicing", "Inventory", "Warranty tracking", "Reports"],
   },
   {
     slug: "seo-growth-setup",
     title: "SEO Growth Setup",
     category: "SEO",
+    image: projectImages.seoGrowthSetup,
     description:
-      "Technical SEO, metadata, internal structure and performance work for an e-commerce catalogue.",
-    result: "Organic sessions up 240% over six months",
+      "Our SEO setup for a business website: a technical audit, cleaner page titles and descriptions, better internal linking and faster page loads, followed by a monthly report on rankings and traffic.",
+    result: "Monthly report on rankings and traffic",
     tags: ["Technical SEO", "Schema", "Core Web Vitals"],
   },
 ];
 
+/**
+ * Client feedback. The people and companies are real; the wording is a
+ * PLACEHOLDER draft — replace each `text` with the client's own words (or get
+ * their sign-off on this wording) before the site goes live.
+ */
 export const reviews = [
   {
-    name: "Sarah Mitchell",
-    role: "Marketing Director",
-    company: "BrightSoft Agency",
-    text: "The team delivered a clean, professional website ahead of schedule. The weekly staging links meant there were no surprises at the end — we knew exactly what we were getting.",
+    name: "Deb Das",
+    role: "Founder & President",
+    company: "ASVAB Tutoring",
+    logo: "/images/companywework/asvab-tutoring-logo.webp",
+    text: "We worked with Kodenvia for about a year to build our full platform, from the public website to the course and practice test areas. They were patient with every change we asked for, kept us updated at each stage, and delivered a site our students find easy to use. I would gladly work with them again.",
   },
   {
-    name: "David Brown",
-    role: "Founder",
-    company: "BluePeak Solutions",
-    text: "They understood our requirements clearly and built a responsive site that finally works properly on mobile. Enquiries through the site have roughly tripled since launch.",
+    name: "Ataur Rahman",
+    role: "Owner",
+    company: "NetBazar",
+    logo: "/images/companywework/netbazar-logo.jpeg",
+    text: "Kodenvia built the shop management software we now run our business on. Sales, stock, dues and warranty claims are all in one place, and I can see how the shop stands the moment I open the dashboard. They listened to how we actually work and built the system around it.",
   },
   {
-    name: "Nadia Karim",
-    role: "Operations Lead",
-    company: "CloudNest Digital",
-    text: "Excellent ongoing support with site updates, SEO and admin tasks. Having one team handle all three has saved us a lot of coordination time.",
+    name: "Jewel Syed",
+    role: "Reporter",
+    company: "NewsStream",
+    logo: "/images/companywework/newsstream.jpg",
+    text: "Working with the Kodenvia team has been smooth from the start. They are quick to respond, clear about what they will deliver and when, and they follow through. Whenever we need an update or a fix, it gets done without any back and forth.",
   },
 ];
 
@@ -223,7 +256,7 @@ export const faqs = [
   {
     question: "Do you work with clients in other time zones?",
     answer:
-      "Yes. We are based in Dhaka and work with clients across Europe, North America and Australia. We hold a fixed overlap window each day and reply to messages within one working day.",
+      "Yes. We are a fully remote team based in Dhaka, Bangladesh, working with clients across Europe, North America and Australia. We hold a fixed overlap window each day and reply to messages within one working day.",
   },
   {
     question: "What happens after launch?",
@@ -232,9 +265,14 @@ export const faqs = [
   },
 ];
 
+/** Turns a display number like "+880 1850-128324" into a tel: href. */
+export const telHref = (phone: string) => `tel:${phone.replace(/[\s-]/g, "")}`;
+
 export const contactDetails = {
-  email: "hello@devteamstudio.com",
-  phone: "+880 1700-000000",
+  email: "kodenviatech@gmail.com",
+  /** Both numbers are also on WhatsApp. */
+  phones: ["+880 1850-128324", "+880 1613-511976"],
   location: "Dhaka, Bangladesh",
+  remote: "A fully remote team, working with clients worldwide.",
   hours: "Sun–Thu, 10:00–19:00 (GMT+6)",
 };
