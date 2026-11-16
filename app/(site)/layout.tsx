@@ -1,6 +1,8 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import BackToTop from "@/components/BackToTop";
+import JsonLd from "@/components/JsonLd";
+import { organizationSchema } from "@/lib/structured-data";
 import AnimationProvider from "@/components/animations/AnimationProvider";
 import ScrollProgress from "@/components/animations/ScrollProgress";
 
@@ -15,6 +17,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         Skip to content
       </a>
 
+      <JsonLd data={organizationSchema()} />
       <ScrollProgress />
       <Header />
       <AnimationProvider>

@@ -6,11 +6,24 @@ import MagneticButton from "@/components/animations/MagneticButton";
 import ReviewSlider from "@/components/ReviewSlider";
 import SectionTitle from "@/components/SectionTitle";
 import ServiceCard from "@/components/ServiceCard";
-import { companies, contactDetails, process, projects, services, stats } from "@/data/siteData";
+import JsonLd from "@/components/JsonLd";
+import { companies, contactDetails, process, projects, services, site, stats } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
+import { websiteSchema } from "@/lib/structured-data";
+
+export const metadata = pageMetadata({
+  title: `${site.name} | Software & Web Development Company in Bangladesh`,
+  description:
+    "Kodenvia builds fast websites, does technical SEO, and creates ERP, pharmacy and super shop management software. A remote team in Dhaka, Bangladesh, working with clients worldwide.",
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={websiteSchema()} />
+
       {/* ---------------------------------------------------------- Hero */}
       <section className="relative overflow-hidden border-b border-ink-100">
         <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-60" />
@@ -173,7 +186,7 @@ export default function HomePage() {
                   height={56}
                   className="h-12 w-12 rounded-xl object-contain"
                 />
-                <span className="text-lg font-bold tracking-tight text-ink-400">{company.name}</span>
+                <span className="text-lg font-bold tracking-tight text-ink-500">{company.name}</span>
               </li>
             ))}
           </ul>

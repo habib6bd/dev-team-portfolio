@@ -16,6 +16,7 @@ import {
 import { attempt } from "@/lib/attempt";
 import { requireAuth } from "@/lib/auth";
 import { isDatabaseConfigured } from "@/lib/db";
+import { countryName } from "@/lib/request";
 
 const ALLOWED_RANGES = [7, 30, 90];
 
@@ -123,8 +124,12 @@ export default async function VisitorsPage({
         </Card>
       </div>
 
-      <Card title="Countries" description="Recorded when the site runs behind Vercel's edge network">
-        <BarList data={countries} emptyLabel="No country data recorded yet." />
+      <Card title="Countries" description="Estimated from each visitor's IP address">
+        <BarList
+          data={countries}
+          emptyLabel="No country data recorded yet."
+          formatLabel={countryName}
+        />
       </Card>
 
       <section className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-soft">

@@ -17,7 +17,9 @@ import {
 import { requireAuth } from "@/lib/auth";
 import { isDatabaseConfigured } from "@/lib/db";
 import { attempt } from "@/lib/attempt";
+import { formatDate } from "@/lib/datetime";
 import { listLeads } from "@/lib/leads";
+import { countryName } from "@/lib/request";
 
 const ALLOWED_RANGES = [7, 30, 90];
 
@@ -176,7 +178,7 @@ export default async function DashboardPage({
                       </span>
                     </span>
                     <span className="shrink-0 text-xs text-ink-400">
-                      {new Date(lead.created_at).toLocaleDateString("en-GB", {
+                      {formatDate(lead.created_at, {
                         day: "numeric",
                         month: "short",
                       })}
@@ -188,8 +190,12 @@ export default async function DashboardPage({
           )}
         </section>
 
-        <Card title="Top countries" description="Available when deployed behind Vercel">
-          <BarList data={countries} emptyLabel="No country data recorded yet." />
+        <Card title="Top countries" description="Estimated from each visitor's IP address">
+          <BarList
+            data={countries}
+            emptyLabel="No country data recorded yet."
+            formatLabel={countryName}
+          />
         </Card>
       </div>
     </div>

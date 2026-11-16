@@ -2,47 +2,32 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import VisitTracker from "@/components/analytics/VisitTracker";
 import { site } from "@/data/siteData";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? site.url;
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  // Pages set their own title, description, canonical and social tags through
+  // pageMetadata() in lib/seo.ts; these are the fallbacks.
   title: {
-    default: `${site.name} — Web Development, SEO & Business Software`,
+    default: `${site.name} | Software & Web Development Company in Bangladesh`,
     template: `%s | ${site.name}`,
   },
-  description:
-    "A fully remote team building fast websites, ranking them on Google, and creating ERP, pharmacy and super shop software for growing businesses.",
-  keywords: [
-    "web development",
-    "Next.js developer",
-    "SEO agency",
-    "admin support",
-    "ERP software",
-    "custom software development",
-    "pharmacy management software",
-    "super shop POS software",
-    "Bangladesh",
-  ],
-  openGraph: {
-    type: "website",
-    url: siteUrl,
-    siteName: site.name,
-    title: `${site.name} — Web Development, SEO & Business Software`,
-    description:
-      "A fully remote team building fast websites, ranking them on Google, and creating ERP, pharmacy and super shop software for growing businesses.",
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name, url: siteUrl }],
+  creator: site.name,
+  publisher: site.name,
+  openGraph: { type: "website", siteName: site.name, locale: "en_US" },
+  twitter: { card: "summary_large_image" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
-  twitter: {
-    card: "summary_large_image",
-    title: site.name,
-    description: "Web development, SEO and admin support for growing businesses.",
-  },
-  icons: { icon: site.logo, apple: site.logo },
-  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -76,7 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="bg-white text-ink-900 antialiased">
+      {/* suppressHydrationWarning: browser extensions (ColorZilla, Grammarly…)
+          add their own attributes to <body> before React hydrates. */}
+      <body className="bg-white text-ink-900 antialiased" suppressHydrationWarning>
         {children}
         <VisitTracker />
       </body>

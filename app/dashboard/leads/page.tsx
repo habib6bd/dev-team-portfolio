@@ -6,6 +6,7 @@ import StatusBadge from "@/components/dashboard/StatusBadge";
 import { requireAuth } from "@/lib/auth";
 import { isDatabaseConfigured } from "@/lib/db";
 import { attempt } from "@/lib/attempt";
+import { formatDate } from "@/lib/datetime";
 import { listLeads } from "@/lib/leads";
 import type { LeadStatus } from "@/lib/validation";
 
@@ -104,7 +105,7 @@ export default async function LeadsPage({
                       <StatusBadge status={lead.status as LeadStatus} />
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap text-ink-500">
-                      {new Date(lead.created_at).toLocaleDateString("en-GB", {
+                      {formatDate(lead.created_at, {
                         day: "numeric",
                         month: "short",
                         year: "numeric",

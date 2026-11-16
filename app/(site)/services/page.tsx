@@ -1,18 +1,33 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import FaqList from "@/components/FaqList";
+import JsonLd from "@/components/JsonLd";
 import SectionTitle from "@/components/SectionTitle";
 import { faqs, process, services } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
+import { breadcrumbSchema, faqSchema, serviceListSchema } from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "Services",
+export const metadata = pageMetadata({
+  title: "Software, Web Development & SEO Services",
   description:
-    "Web development, SEO, admin support, ERP, custom software, pharmacy and super shop management software — what each service includes and what you get at the end.",
-};
+    "Kodenvia services: web development, technical SEO, admin support, custom software, and ERP, pharmacy and super shop management software in Bangladesh. See what each includes.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          serviceListSchema(),
+          faqSchema(faqs),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Services", path: "/services" },
+          ]),
+        ]}
+      />
+
       <section className="relative overflow-hidden border-b border-ink-100 bg-ink-50/50">
         <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-50" />
         <div className="container-page relative py-20 lg:py-24">
@@ -47,7 +62,9 @@ export default function ServicesPage() {
 
               <div>
                 <h2 className="text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
-                  {service.title}
+                  <Link href={service.link} className="transition-colors hover:text-brand-700">
+                    {service.title}
+                  </Link>
                 </h2>
                 <p className="mt-4 text-base leading-8 text-ink-600">{service.overview}</p>
 
@@ -68,14 +85,24 @@ export default function ServicesPage() {
                   ))}
                 </ul>
 
-                <Link
-                  href={`/hire-us?service=${encodeURIComponent(service.title)}`}
-                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
-                >
-                  Get a quote
-                  <span className="sr-only"> for {service.title}</span>
-                  <span aria-hidden="true">→</span>
-                </Link>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link
+                    href={`/hire-us?service=${encodeURIComponent(service.title)}`}
+                    className="inline-flex items-center gap-2 rounded-full bg-ink-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+                  >
+                    Get a quote
+                    <span className="sr-only"> for {service.title}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                  <Link
+                    href={service.link}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-600"
+                  >
+                    Full details
+                    <span className="sr-only"> about {service.title}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
               </div>
             </article>
           ))}
@@ -100,22 +127,7 @@ export default function ServicesPage() {
       <section className="container-page py-24">
         <SectionTitle label="FAQ" title="Questions we get asked first." />
 
-        <div data-anim="fade-up" className="mt-12 max-w-3xl divide-y divide-ink-100 border-y border-ink-100">
-          {faqs.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-left text-base font-semibold text-ink-900">
-                {faq.question}
-                <span
-                  aria-hidden="true"
-                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-ink-200 text-ink-500 transition-transform duration-300 group-open:rotate-45"
-                >
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-ink-600">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
+        <FaqList faqs={faqs} />
       </section>
     </>
   );

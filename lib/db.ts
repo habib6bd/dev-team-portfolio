@@ -3,6 +3,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { Pool, type QueryResultRow } from "pg";
+import { TIME_ZONE } from "./datetime";
 
 /**
  * A single pooled Postgres client, shared across requests.
@@ -43,6 +44,9 @@ function createPool(): Pool {
     // only burns connection slots on the database. Elsewhere stay small too:
     // shared (cPanel) Postgres allows only a handful of connections per user.
     max: process.env.VERCEL ? 1 : 3,
+    // Day boundaries in the analytics queries (date_trunc('day', …)) follow
+    // the session time zone, so pin it to the one the dashboard displays.
+    options: `-c timezone=${TIME_ZONE}`,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
   });

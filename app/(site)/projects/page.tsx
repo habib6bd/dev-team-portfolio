@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import { projects } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Projects",
+export const metadata = pageMetadata({
+  title: "Our Projects: Websites, ERP Software & SEO Work",
   description:
-    "Recent web development, ERP software and SEO work from the Kodenvia team.",
-};
+    "Recent Kodenvia projects: a test-prep website for ASVAB Tutoring, a shop management ERP for NetBazar, and technical SEO setups for business websites.",
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   return (

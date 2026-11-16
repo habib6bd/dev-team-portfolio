@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import SectionTitle from "@/components/SectionTitle";
 import { contactDetails, faqs, telHref } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact",
+export const metadata = pageMetadata({
+  title: "Contact Kodenvia: Email, Phone & WhatsApp",
   description:
-    "Get in touch with Kodenvia about web development, SEO, admin support or business software such as ERP, pharmacy and super shop management.",
-};
+    "Contact Kodenvia in Dhaka, Bangladesh about web development, SEO, admin support or business software such as ERP, pharmacy and super shop management.",
+  path: "/contact",
+});
 
 type Channel = {
   label: string;

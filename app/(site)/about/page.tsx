@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import Counter from "@/components/animations/Counter";
 import SectionTitle from "@/components/SectionTitle";
 import { contactDetails, process, stats } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About us",
+export const metadata = pageMetadata({
+  title: "About Kodenvia: Remote Software Team in Dhaka",
   description:
-    "Kodenvia is a fully remote team based in Dhaka, Bangladesh — building websites, SEO and business software for clients worldwide.",
-};
+    "Kodenvia is a fully remote software and web development team based in Dhaka, Bangladesh, building websites, SEO and business software for clients worldwide.",
+  path: "/about",
+});
 
 const values = [
   {

@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { removeLead, setLeadNotes, setLeadStatus } from "@/app/actions/dashboard";
 import StatusBadge from "@/components/dashboard/StatusBadge";
 import { requireAuth } from "@/lib/auth";
+import { formatDateTime } from "@/lib/datetime";
 import { getLead } from "@/lib/leads";
+import { countryName } from "@/lib/request";
 import { LEAD_STATUSES, type LeadStatus } from "@/lib/validation";
 
 function Detail({ label, children }: { label: string; children: React.ReactNode }) {
@@ -24,7 +26,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
   const lead = await getLead(id);
   if (!lead) notFound();
 
-  const received = new Date(lead.created_at).toLocaleString("en-GB", {
+  const received = formatDateTime(lead.created_at, {
     dateStyle: "full",
     timeStyle: "short",
   });
@@ -134,7 +136,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
             <dl className="mt-4">
               <Detail label="Page">{lead.source_path ?? "Unknown"}</Detail>
               <Detail label="Referrer">{lead.referrer ?? "Direct"}</Detail>
-              <Detail label="Country">{lead.country ?? "Unknown"}</Detail>
+              <Detail label="Country">{lead.country ? countryName(lead.country) : "Unknown"}</Detail>
             </dl>
           </section>
 

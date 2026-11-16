@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { recordVisit } from "@/lib/analytics";
 import { isDatabaseConfigured } from "@/lib/db";
-import { hashIp, ipFromHeaders, isBot, parseUserAgent } from "@/lib/request";
+import { countryFromHeaders, hashIp, ipFromHeaders, isBot, parseUserAgent } from "@/lib/request";
 import { visitSchema } from "@/lib/validation";
 
 const VISITOR_COOKIE = "devteam_vid";
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       device,
       browser,
       os,
-      country: request.headers.get("x-vercel-ip-country"),
+      country: countryFromHeaders(request.headers),
       screenWidth: screenWidth ?? null,
       ipHash: hashIp(ipFromHeaders(request.headers)),
     });

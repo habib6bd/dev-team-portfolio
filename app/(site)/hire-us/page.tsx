@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import HireForm from "@/components/HireForm";
 import SectionTitle from "@/components/SectionTitle";
 import { contactDetails, process, telHref } from "@/data/siteData";
+import { pageMetadata } from "@/lib/seo";
 import { SERVICE_OPTIONS } from "@/lib/validation";
 
-export const metadata: Metadata = {
-  title: "Hire us",
+export const metadata = pageMetadata({
+  title: "Hire Kodenvia: Get a Quote in One Working Day",
   description:
-    "Tell us about your project. Send the details and get a reply with scope, timeline and price within one working day.",
-};
+    "Tell us about your website or software project. Send the details and get a reply with scope, timeline and price within one working day.",
+  path: "/hire-us",
+});
 
 export default async function HireUsPage({
   searchParams,
